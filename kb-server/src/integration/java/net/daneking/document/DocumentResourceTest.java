@@ -1,4 +1,4 @@
-package net.daneking.people;
+package net.daneking.document;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,13 +8,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import net.daneking.people.domain.Person;
+import net.daneking.document.domain.Document;
 
 import org.junit.Test;
 
 import utils.TestSupport;
 
-public class PeopleResourceTest extends TestSupport<PeopleResource> {
+public class DocumentResourceTest extends TestSupport<DocumentResource> {
 
 	@Test
 	public void shouldReturnA404WhenItemIsNotFound() {
@@ -24,9 +24,9 @@ public class PeopleResourceTest extends TestSupport<PeopleResource> {
 
 	@Test
 	public void shouldReturnA200WhenItemIsFound() {
-		Person person = new Person(20);
-		person.setFirstName("Joe");
-		person.setLastName("Smith");
+		Document document = new Document(20);
+		document.setName("test");
+		document.setType("note");
 
 		final Response response = getItem("20");
 		assertEquals(Status.OK.getStatusCode(), response.getStatus());
@@ -39,14 +39,14 @@ public class PeopleResourceTest extends TestSupport<PeopleResource> {
 
 	@Test
 	public void shouldReturnA204WhenItemIsSaved() {
-		final Response response = postItem(new Person(2));
+		final Response response = postItem(new Document(2));
 		assertEquals(Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
 	}
 
-	private Response postItem(final Person information) {
+	private Response postItem(final Document information) {
 		final Response response = peopleResource().request().put(
-				Entity.entity(new Person(2), MediaType.APPLICATION_JSON));
+				Entity.entity(new Document(2), MediaType.APPLICATION_JSON));
 		return response;
 	}
 

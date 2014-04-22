@@ -1,4 +1,4 @@
-package net.daneking.people;
+package net.daneking.document;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -13,15 +13,15 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import net.daneking.people.domain.Person;
-import net.daneking.people.repository.FindPerson;
-import net.daneking.people.repository.SavePerson;
+import net.daneking.document.domain.Document;
+import net.daneking.document.repository.FindDocument;
+import net.daneking.document.repository.SaveDocument;
 import net.daneking.representation.Representation;
 
-@Path("people")
+@Path("document")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class PeopleResource {
+public class DocumentResource {
 	@Context
 	private UriInfo uriInfo;
 
@@ -32,30 +32,26 @@ public class PeopleResource {
 	@GET
 	@Path("/{id}")
 	public Response get(@PathParam("id") final int id) {
-		return buildPersonResponse(id).build();
+		Representation<Document> documentRepresentation = new FindDocument(getPath()).findDocument(id);
+		return buildResponse(documentRepresentation).build();
 	}
 
-	private ResponseBuilder buildPersonResponse(final int id) {
-		Representation<Person> personRepresentation = new FindPerson(getPath()).findPerson(id);
+	private ResponseBuilder buildResponse(final Representation<Document> documentRepresentation) {
 		ResponseBuilder returnReponse;
-		if (personRepresentation.getEntity() == null) {
+		if (documentRepresentation.getEntity() == null) {
 			returnReponse = Response.status(Status.NOT_FOUND);
 		} else {
-			returnReponse = Response.ok(personRepresentation);
+			returnReponse = Response.ok(documentRepresentation);
 		}
 		return returnReponse;
 	}
 
 	@PUT
-	public Response save(final Person person) {
-		new SavePerson().save(person);
+	@Path("/{id}")
+	public Response save(@PathParam("id") final Integer id, final Document document) {
+		document.setId(id);
+		new SaveDocument().save(document);
 		return Response.noContent().build();
-	}
-
-	@GET
-	@Path("/test")
-	public Person get() {
-		return new Person(2);
 	}
 
 }
