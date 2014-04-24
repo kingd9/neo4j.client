@@ -14,11 +14,11 @@ import org.junit.Test;
 
 import utils.TestSupport;
 
-public class DocumentResourceTest extends TestSupport<DocumentResource> {
+public class DocumentResourceIntegrationTest extends TestSupport<DocumentResource> {
 
 	@Test
 	public void shouldReturnA404WhenItemIsNotFound() {
-		final Response response = getItem("2");
+		final Response response = getItem("345");
 		assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
 
@@ -33,25 +33,28 @@ public class DocumentResourceTest extends TestSupport<DocumentResource> {
 	}
 
 	private Response getItem(final String id) {
-		final Response response = peopleResource().path(id).request(MediaType.APPLICATION_JSON).get(Response.class);
+		final Response response = documentResource().path(id).request(MediaType.APPLICATION_JSON).get(Response.class);
 		return response;
 	}
 
 	@Test
 	public void shouldReturnA204WhenItemIsSaved() {
-		final Response response = postItem(new Document(2));
+		final Response response = putItem(new Document(2));
 		assertEquals(Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
 	}
 
-	private Response postItem(final Document information) {
-		final Response response = peopleResource().request().put(
-				Entity.entity(new Document(2), MediaType.APPLICATION_JSON));
+	private Response putItem(final Document information) {
+		Integer id = Integer.valueOf(20);
+		Document entity = new Document(id);
+		entity.setName("test");
+		entity.setType("TestType");
+		final Response response = documentResource().path(id.toString()).request().put(Entity.json(entity));
 		return response;
 	}
 
-	protected WebTarget peopleResource() {
-		return target("people");
+	protected WebTarget documentResource() {
+		return target("documents");
 	}
 
 }

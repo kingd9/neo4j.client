@@ -2,6 +2,7 @@ package net.daneking.document;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,17 +14,22 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import net.daneking.document.activity.DocumentActivityFactory;
+import net.daneking.document.activity.FindDocument;
 import net.daneking.document.domain.Document;
-import net.daneking.document.repository.FindDocument;
-import net.daneking.document.repository.SaveDocument;
 import net.daneking.representation.Representation;
 
-@Path("document")
+@Path("documents")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class DocumentResource {
 	@Context
 	private UriInfo uriInfo;
+	private DocumentActivityFactory factory;
+
+	public void setFactory(final DocumentActivityFactory factory) {
+		this.factory = factory;
+	}
 
 	private String getPath() {
 		return uriInfo.getAbsolutePath().toString();
@@ -50,8 +56,21 @@ public class DocumentResource {
 	@Path("/{id}")
 	public Response save(@PathParam("id") final Integer id, final Document document) {
 		document.setId(id);
-		new SaveDocument().save(document);
+		getFactory().getSaveDocument().save(document);
 		return Response.noContent().build();
+	}
+
+	public DocumentActivityFactory getFactory() {
+		if (factory == null) {
+			factory = new DocumentActivityFactory();
+		}
+		return factory;
+	}
+
+	@POST
+	public Response create() {
+		Document document = getFactory().getCreateDocument().create();
+		return Response.status(Status.CREATED).build();
 	}
 
 }

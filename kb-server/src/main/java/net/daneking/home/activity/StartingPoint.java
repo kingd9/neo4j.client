@@ -6,7 +6,7 @@ import net.daneking.representation.Representation;
 
 public class StartingPoint {
 
-	private static final String DOCUMENT_PATH = "document";
+	private static final String DOCUMENT_PATH = "documents";
 
 	public Representation<String> getInitialLinks(final String baseUri) {
 		Representation<String> wrappedEntity = new Representation<String>("home");

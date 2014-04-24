@@ -1,6 +1,7 @@
-package net.daneking.document.repository;
+package net.daneking.document.activity;
 
 import net.daneking.document.domain.Document;
+import net.daneking.document.repository.DocumentRepository;
 
 public class SaveDocument {
 

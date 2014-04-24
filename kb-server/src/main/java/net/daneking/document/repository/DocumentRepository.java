@@ -5,7 +5,7 @@ import java.util.Map;
 
 import net.daneking.document.domain.Document;
 
-class DocumentRepository {
+public class DocumentRepository {
 	private static final DocumentRepository theRepository = new DocumentRepository();
 	private static int num = 1;
 	private final Map<Integer, Document> backingStore = new HashMap<Integer, Document>();
