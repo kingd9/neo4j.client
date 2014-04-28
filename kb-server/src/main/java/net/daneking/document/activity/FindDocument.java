@@ -12,7 +12,7 @@ public class FindDocument {
 
 	}
 
-	public Representation<Document> findDocument(final int id) {
+	public Representation<Document> findDocument(final String id) {
 		final DocumentRepository documentRepository = DocumentRepository.current();
 		return createLinks(this.baseUri, documentRepository.find(id));
 	}

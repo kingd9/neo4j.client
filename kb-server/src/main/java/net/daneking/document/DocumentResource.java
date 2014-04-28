@@ -2,7 +2,6 @@ package net.daneking.document;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,7 +36,7 @@ public class DocumentResource {
 
 	@GET
 	@Path("/{id}")
-	public Response get(@PathParam("id") final int id) {
+	public Response get(@PathParam("id") final String id) {
 		Representation<Document> documentRepresentation = new FindDocument(getPath()).findDocument(id);
 		return buildResponse(documentRepresentation).build();
 	}
@@ -54,8 +53,8 @@ public class DocumentResource {
 
 	@PUT
 	@Path("/{id}")
-	public Response save(@PathParam("id") final Integer id, final Document document) {
-		document.setId(id);
+	public Response save(@PathParam("id") final String id, final Document document) {
+		document.setIdentifier(id);
 		getFactory().getSaveDocument().save(document);
 		return Response.noContent().build();
 	}
@@ -65,12 +64,6 @@ public class DocumentResource {
 			factory = new DocumentActivityFactory();
 		}
 		return factory;
-	}
-
-	@POST
-	public Response create() {
-		Document document = getFactory().getCreateDocument().create();
-		return Response.status(Status.CREATED).build();
 	}
 
 }

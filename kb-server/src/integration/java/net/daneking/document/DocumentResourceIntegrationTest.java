@@ -10,11 +10,25 @@ import javax.ws.rs.core.Response.Status;
 
 import net.daneking.document.domain.Document;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import utils.TestSupport;
 
 public class DocumentResourceIntegrationTest extends TestSupport<DocumentResource> {
+	private static final String INITIAL_ITEM_ID = "20";
+
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+		addInitialItem();
+	}
+
+	private void addInitialItem() {
+		Document document = new Document(INITIAL_ITEM_ID);
+		final Response response = putItem(document);
+	}
 
 	@Test
 	public void shouldReturnA404WhenItemIsNotFound() {
@@ -24,11 +38,8 @@ public class DocumentResourceIntegrationTest extends TestSupport<DocumentResourc
 
 	@Test
 	public void shouldReturnA200WhenItemIsFound() {
-		Document document = new Document(20);
-		document.setName("test");
-		document.setType("note");
 
-		final Response response = getItem("20");
+		final Response response = getItem(INITIAL_ITEM_ID.toString());
 		assertEquals(Status.OK.getStatusCode(), response.getStatus());
 	}
 
@@ -39,17 +50,15 @@ public class DocumentResourceIntegrationTest extends TestSupport<DocumentResourc
 
 	@Test
 	public void shouldReturnA204WhenItemIsSaved() {
-		final Response response = putItem(new Document(2));
+		final Response response = putItem(new Document("2"));
 		assertEquals(Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
 	}
 
 	private Response putItem(final Document information) {
-		Integer id = Integer.valueOf(20);
-		Document entity = new Document(id);
-		entity.setName("test");
-		entity.setType("TestType");
-		final Response response = documentResource().path(id.toString()).request().put(Entity.json(entity));
+		String path = "20";
+		Document entity = new Document(path);
+		final Response response = documentResource().path(path).request().put(Entity.json(entity));
 		return response;
 	}
 
